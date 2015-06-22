@@ -1,0 +1,17 @@
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext    
+import org.apache.spark.SparkContext._
+import org.elasticsearch.spark._        
+
+object demo{
+	def main(args: Array[String]){
+		val conf = new SparkConf().setAppName("demo").setMaster("ec2-52-8-179-244.us-west-1.compute.amazonaws.com")
+		conf.set("es.index.auto.create", "true")
+
+		val sc = new SparkContext(conf)         
+		val numbers = Map("one" -> 1, "two" -> 2, "three" -> 3)
+		val airports = Map("arrival" -> "Otopeni", "SFO" -> "San Fran")
+
+		sc.makeRDD(Seq(numbers, airports)).saveToEs("demo/docs")
+		}
+	}
