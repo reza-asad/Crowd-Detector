@@ -79,7 +79,7 @@ object test_means{
   	sparkConf.set("es.index.auto.create", "true")
   	sparkConf.set("es.nodes", "ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9200") 
   	sparkConf.set("spark.executor.memory", "1g")
-    val ssc = new StreamingContext(sparkConf, Seconds(5.toLong))
+    val ssc = new StreamingContext(sparkConf, Seconds(2.toLong))
     
     // Create direct kafka stream with brokers and topics
 	val kafkaParams = Map[String, String]("metadata.broker.list" -> brokers)
@@ -88,33 +88,33 @@ object test_means{
 
 	// Create Training and Test Data
 	val trainingData = points.map(x => Vectors.sparse(2,Seq((0,compact(render(x \ "location" \ "coordinate" \ "latitude")).toDouble),
-								   		 					(1,compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble))))	
+		(1,compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble))))	
 
 	val testData = 	points.map(x => LabeledPoint(compact(render(x \ "id")).toInt, Vectors.sparse(2,Seq(
-														(0,compact(render(x \ "location" \ "coordinate" \ "latitude")).toDouble),
-								   		 				(1,compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble)))))
+		(0,compact(render(x \ "location" \ "coordinate" \ "latitude")).toDouble),
+		(1,compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble)))))
 
 
     
     val model = new StreamingKMeans()
       .setK(100000.toInt)
-      .setDecayFactor(0.1)
+      .setDecayFactor(0.5)
       .setRandomCenters(2.toInt, 0.0)
     model.trainOn(trainingData)
   
 	
 	val prediction = model.predictOnValues(testData.map(lp => (lp.label, lp.features)))
 	val tupleData = points.map(x => (compact(render(x \ "id")).toDouble,
-									(compact(render(x \ "location" \ "coordinate" \ "latitude")).toDouble,
-									 compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble)))
+		(compact(render(x \ "location" \ "coordinate" \ "latitude")).toDouble,
+		 compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble)))
 	
 	val data = tupleData.join(prediction)
 	val output = data.map(x => Map("name"-> x._1.toInt,
-								   "cluster"->x._2._2,
-								   "location"-> Map("lat"->x._2._1._1, "lon"->x._2._1._2)))
-
+		"cluster"->x._2._2,
+		"location"-> Map("lat"->x._2._1._1, "lon"->x._2._1._2)))
+	
+	output.print()
 	output.foreachRDD { rdd => {
-//		rdd.collect().foreach(t => println(t))
 		rdd.saveToEs("simple/people")
 		}
 	}
