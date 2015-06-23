@@ -35,7 +35,6 @@ import com.codahale.jerkson.Json
 import org.apache.spark.streaming.StreamingContext._
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import wabisabi._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
@@ -52,16 +51,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * The rows of the test text files must be labeled data in the form
  * `(y,[x1,x2,x3,...,xn])`
  * Where y is some identifier. n must be the same for train and test.
- *
- * Usage:
- *   StreamingKMeansExample <trainingDir> <testDir> <batchDuration> <numClusters> <numDimensions>
- *
- * To run on your local machine using the two directories `trainingDir` and `testDir`,
- * with updates every 5 seconds, 2 dimensions per data point, and 3 clusters, call:
- *    $ bin/run-example mllib.StreamingKMeansExample trainingDir testDir 5 3 2
- *
- * As you add text files to `trainingDir` the clusters will continuously update.
- * Anytime you add text files to `testDir`, you'll see predicted labels using the current model.
  *
  */
 object test_means{
@@ -97,7 +86,7 @@ object test_means{
 
     
     val model = new StreamingKMeans()
-      .setK(100000.toInt)
+      .setK(3500.toInt)
       .setDecayFactor(0.5)
       .setRandomCenters(2.toInt, 0.0)
     model.trainOn(trainingData)
@@ -109,13 +98,13 @@ object test_means{
 		 compact(render(x \ "location" \ "coordinate" \"longitude")).toDouble)))
 	
 	val data = tupleData.join(prediction)
-	val output = data.map(x => Map("name"-> x._1.toInt,
+	val output = data.map(x => Map("id"-> x._1.toInt,
 		"cluster"->x._2._2,
 		"location"-> Map("lat"->x._2._1._1, "lon"->x._2._1._2)))
 	
-	output.print()
 	output.foreachRDD { rdd => {
-		rdd.saveToEs("simple/people")
+		rdd.saveToEs("real_time/people")
+		rdd.saveToEs("raw_data/people_tracks")
 		}
 	}
 
