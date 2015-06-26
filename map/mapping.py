@@ -75,7 +75,15 @@ def push(lat, lon, coverage):
 		popup='{}'.format(counts[m]), line_color='#132b5e',\
 		fill_color='#132b5e', fill_opacity=0.6)
 			
+<<<<<<< HEAD
 	USmap.create_map(path='/home/ubuntu/EngData/map/templates/map.html')
+=======
+	USmap.create_map(path='/templates/map.html')
+
+
+
+
+>>>>>>> 96936062d11c987c976bd03f06677857560f1784
 
 
 <<<<<<< HEAD
