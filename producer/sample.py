@@ -5,6 +5,8 @@
 # origin. The random walk is there to make more points representing
 # people near restaurants. There will be 1000000 points generated and the
 # location of the 1000000 people will get updated.
+#
+# Note: For a better performance the producer should be parallelized.
 # -*- coding: utf-8 -*-
 
 
