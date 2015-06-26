@@ -1,6 +1,10 @@
 /**
  * Reza Asad
  * 
+ * This computes Streaming K-means on the data consumed. 
+ * Moreover each data point is marked with the cluster 
+ * that it belongs to. The reslut is sent to elasticsearch
+ * 
  * The rows of the training data must be vector data in the form
  * `[x1,x2,x3,...,xn]`
  * Where n is the number of dimensions.
