@@ -26,3 +26,5 @@ Engineering challenges :
 tunning batch intervals has to be done carefully to avoid situations where the map is empty of points.
 
 2. Choosing k.
+
+You can visit the page at http://52.8.198.72:5000/search
