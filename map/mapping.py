@@ -27,7 +27,7 @@ def push(lat, lon, coverage):
 	# extratcs points form the database and sketches them 
 	# on the map.
 	limit = 3000
-	k = 100000
+	k = 500
 	counts = [0]*k
 	lats = [0]*k
 	longs = [0]*k
@@ -82,7 +82,7 @@ def push(lat, lon, coverage):
 		popup='{}'.format(counts[m]), line_color='#132b5e',\
 		fill_color='#132b5e', fill_opacity=0.6)
 			
-	USmap.create_map(path='/home/ubuntu/EngData/templates/map.html')
+	USmap.create_map(path='/templates/map.html')
 
 
 
