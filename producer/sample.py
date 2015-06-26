@@ -1,6 +1,6 @@
 # Reza Asad
-# - This will extract information about some restaurants of in USA.
-
+# This will extract information about some restaurants in San Fransisco.
+# Morover it 
 
 # -*- coding: utf-8 -*-
 """
