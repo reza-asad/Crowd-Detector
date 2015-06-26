@@ -1,4 +1,4 @@
-name := "test_means"
+name := "kmeans"
 
 
 version := "1.0"

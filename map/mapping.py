@@ -78,7 +78,11 @@ def push(lat, lon, coverage):
 	USmap.create_map(path='/home/ubuntu/EngData/map/templates/map.html')
 
 
+<<<<<<< HEAD
 
 
 
 
+=======
+	
+>>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9

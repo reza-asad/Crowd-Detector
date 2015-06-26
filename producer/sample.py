@@ -1,20 +1,13 @@
 # Reza Asad
-# - This will extract information about some restaurants of in USA.
-
-
+#
+# This will extract information about some restaurants in San Fransisco.
+# A random walk is performed with the location of the restaurants as the  
+# origin. The random walk is there to make more points representing
+# people near restaurants. There will be 1000000 points generated and the
+# location of the 1000000 people will get updated.
 # -*- coding: utf-8 -*-
-"""
-Yelp API v2.0 code sample.
-This program demonstrates the capability of the Yelp API version 2.0
-by using the Search API to query for businesses by a search term and location,
-and the Business API to query additional information about the top result
-from the search query.
-Please refer to http://www.yelp.com/developers/documentation for the API documentation.
-This program requires the Python oauth2 library, which you can install via:
-`pip install -r requirements.txt`.
-Sample usage of the program:
-`python sample.py --term="bars" --location="San Francisco, CA"`
-"""
+
+
 from kafka.client import KafkaClient
 from kafka.producer import SimpleProducer
 import argparse
@@ -34,15 +27,19 @@ DEFAULT_TERM = 'Restaurants'
 SEARCH_LIMIT = 20
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
+<<<<<<< HEAD
 kafka = KafkaClient("ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9092")
+=======
+kafka = KafkaClient("host:9092")
+>>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9
 producer = SimpleProducer(kafka, async=False)
 
 
 # OAuth credential placeholders that must be filled in by users.
-CONSUMER_KEY = "OoDlk-JlP-hEr_N3PtDMcw"
-CONSUMER_SECRET = "yCwsKqOdJDzcUDD7KBOayLlbe8s"
-TOKEN = "HydDXxGaSIYsPfVlfXy5WF_QsHvN7YgU"
-TOKEN_SECRET = "kKoqt6apoBUFHEZDCSnBuo0Pxuc"
+CONSUMER_KEY = "API Key"
+CONSUMER_SECRET = "API Key"
+TOKEN = "API Key"
+TOKEN_SECRET = "API Key"
 
 
 def request(host, path, url_params=None):
@@ -148,6 +145,7 @@ def main():
 	help='Search location (default: %(default)s)')
 	input_values = parser.parse_args()
 	businesses = query_api(input_values.term, input_values.location)
+<<<<<<< HEAD
 
    	while True:
    		m = 187501
@@ -156,6 +154,15 @@ def main():
 			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
 			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
 			for k in range(0,3125):
+=======
+	
+   	while True:
+   		m = 0
+		for j in range(0, len(businesses)):
+			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
+			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
+			for k in range(0,50000):
+>>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9
 				latWalk = random.uniform(-0.008, 0.008)
 				lonWalk = random.uniform(-0.008, 0.008)
 				newPoint["latitude"] += latWalk
@@ -165,8 +172,11 @@ def main():
 
 				response = producer.send_messages("new-topic", json.dumps(newPoint, indent=4, separators=(',', ': ')))
 						
+<<<<<<< HEAD
 		print(time.time()-t)
 		break
+=======
+>>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9
 
 if __name__ == '__main__':
     main()
