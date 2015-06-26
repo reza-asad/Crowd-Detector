@@ -1,6 +1,6 @@
 # Reza Asad
-# Given a destination (lat, lon) and a coverage radius
-# This program detects the clusters of population within
+# Given a destination (lat, lon) and a coverage radius,
+# this program detects the clusters of population within
 # the coverage radius centered at the destination. 
 
 
