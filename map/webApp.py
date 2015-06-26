@@ -1,6 +1,7 @@
 # Reza Asad
-# This program simulates the movement of people on 
-# the map. 
+# This program creates a website for my Insight Project
+# You can access my slides, demo video and my Linkedin 
+# page through the website. 
 
 import rawes
 import random
