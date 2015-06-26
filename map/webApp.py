@@ -6,22 +6,33 @@ import rawes
 import random
 import folium
 import time
-from tempfile import mkstemp
-from shutil import move
-from os import remove, close
-from movement import push
+
+from mapping import push
 from geopy.geocoders import Nominatim
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 
 app = Flask(__name__)        
+
+@app.route('/Slides')
+def slides():
+    return redirect("http://www.slideshare.net/upload?origin=nav", code=302)
+
+@app.route('/Demo')
+def demo():
+    return redirect("http://www.slideshare.net/upload?origin=nav", code=302)
+
+@app.route('/Contact')
+def contact():
+    return redirect("https://ca.linkedin.com/in/rezaasad", code=302)
+
 @app.route('/search')
 def my_form():
     return render_template("search.html")
 
 @app.route('/map', methods=['POST'])
 def my_form_post():
-	text = request.form['text']
+	text = request.form['search']
 	inputs = text.split(',')
 
 	geolocator = Nominatim()

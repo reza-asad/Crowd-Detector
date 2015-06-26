@@ -16,8 +16,7 @@ Sample usage of the program:
 `python sample.py --term="bars" --location="San Francisco, CA"`
 """
 from kafka.client import KafkaClient
-from kafka.producer import KeyedProducer
-from kafka.partitioner import HashedPartitioner, RoundRobinPartitioner
+from kafka.producer import SimpleProducer
 import argparse
 import json
 import pprint
@@ -26,7 +25,7 @@ import urllib
 import urllib2
 import csv
 import random
-
+import time
 import oauth2
 
 
@@ -36,7 +35,7 @@ SEARCH_LIMIT = 20
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
 kafka = KafkaClient("ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9092")
-producer = KeyedProducer(kafka)
+producer = SimpleProducer(kafka, async=False)
 
 
 # OAuth credential placeholders that must be filled in by users.
@@ -140,43 +139,34 @@ def query_api(term, location):
     return businesses
 
 def main():
-	cities = []
-	m = 0
+	cities = ["san fransisco"]
+	newPoint = {}
+	DEFAULT_LOCATION = cities[0]
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM, type=str, help='Search term (default: %(default)s)')
+	parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, \
+	help='Search location (default: %(default)s)')
+	input_values = parser.parse_args()
+	businesses = query_api(input_values.term, input_values.location)
 
-	with open("cities.csv", 'r') as infile:
-		reader = csv.DictReader(infile)
-		for row in reader:
-			cities.append(row["city"])
-	
-   	for i in range(0,len(cities)):
-   		DEFAULT_LOCATION = cities[i]
-   		parser = argparse.ArgumentParser()
-   		parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM, type=str, help='Search term (default: %(default)s)')
-   		parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, \
-   		help='Search location (default: %(default)s)')
-   		input_values = parser.parse_args()
-   		try:
-   			businesses = query_api(input_values.term, input_values.location)
-   			try:
-   				len(businesses)
-   				for j in range(0, len(businesses)):
-   					newPoint = businesses[j]
-					for k in range(0,1000):
-						latWalk = random.uniform(-0.01, 0.01)
-						lonWalk = random.uniform(-0.01, 0.01)
-						newPoint["location"]["coordinate"]["latitude"] += latWalk
-						newPoint["location"]["coordinate"]["longitude"] += lonWalk
-						newPoint["id"] = m
-						m+=1
+   	while True:
+   		m = 187501
+   		t = time.time()
+		for j in range(0, len(businesses)):
+			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
+			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
+			for k in range(0,3125):
+				latWalk = random.uniform(-0.008, 0.008)
+				lonWalk = random.uniform(-0.008, 0.008)
+				newPoint["latitude"] += latWalk
+				newPoint["longitude"] += lonWalk
+				newPoint["id"] = m
+				m+=1
 
-						response = producer.send("my-topic" , "state_code" \
-						, json.dumps(newPoint, indent=4, separators=(',', ': ')))
-			
-			except TypeError:
-				continue
-   		except urllib2.HTTPError as error:
-   			#sys.exit('Encountered HTTP error {0}. Abort program.'.format(error.code))
-   			continue
+				response = producer.send_messages("new-topic", json.dumps(newPoint, indent=4, separators=(',', ': ')))
+						
+		print(time.time()-t)
+		break
 
 if __name__ == '__main__':
     main()
