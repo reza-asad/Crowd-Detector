@@ -27,4 +27,4 @@ tunning batch intervals has to be done carefully to avoid situations where the m
 
 2. Choosing k.
 
-You can visit the page at http://52.8.198.72:5000/search
+You can visit the page at http://www.crowd-detector.link/search
