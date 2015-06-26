@@ -1,6 +1,7 @@
 # Reza Asad
-# This program simulates the movement of people on 
-# the map. 
+# Given a destination (lat, lon) and a coverage radius
+# This program detects the clusters of population within
+# the coverage radius centered at the destination. 
 
 
 import rawes
@@ -13,7 +14,7 @@ from math import log
 
 def push(lat, lon, coverage):
 	# Connect to Elasticsearch
-	es = rawes.Elastic('http://ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9200')
+	es = rawes.Elastic('host:9200')
 	#USmap = folium.Map(location=[32.848957, -86.630117], tiles='Mapbox Control Room')
 
 	# This will clreate the map
@@ -50,6 +51,7 @@ def push(lat, lon, coverage):
 	mapPoint = es.get("real_time/people/_search?pretty=true&size={}".format(limit), data = query)
 	
 	j = 0
+	
 	# Update Information About the Detected Clusters
 	while True:
 		j+=1
