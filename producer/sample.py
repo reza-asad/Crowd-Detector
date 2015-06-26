@@ -1,23 +1,15 @@
 # Reza Asad
+#
 # This will extract information about some restaurants in San Fransisco.
-# Morover it 
-
+# A random walk is performed with the location of the restaurants as the  
+# origin. The random walk is there to make more points representing
+# people near restaurants. There will be 1000000 points generated and the
+# location of the 1000000 people will get updated.
 # -*- coding: utf-8 -*-
-"""
-Yelp API v2.0 code sample.
-This program demonstrates the capability of the Yelp API version 2.0
-by using the Search API to query for businesses by a search term and location,
-and the Business API to query additional information about the top result
-from the search query.
-Please refer to http://www.yelp.com/developers/documentation for the API documentation.
-This program requires the Python oauth2 library, which you can install via:
-`pip install -r requirements.txt`.
-Sample usage of the program:
-`python sample.py --term="bars" --location="San Francisco, CA"`
-"""
+
+
 from kafka.client import KafkaClient
-from kafka.producer import KeyedProducer
-from kafka.partitioner import HashedPartitioner, RoundRobinPartitioner
+from kafka.producer import SimpleProducer
 import argparse
 import json
 import pprint
@@ -26,7 +18,7 @@ import urllib
 import urllib2
 import csv
 import random
-
+import time
 import oauth2
 
 
@@ -35,15 +27,15 @@ DEFAULT_TERM = 'Restaurants'
 SEARCH_LIMIT = 20
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
-kafka = KafkaClient("ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9092")
-producer = KeyedProducer(kafka)
+kafka = KafkaClient("host:9092")
+producer = SimpleProducer(kafka, async=False)
 
 
 # OAuth credential placeholders that must be filled in by users.
-CONSUMER_KEY = "OoDlk-JlP-hEr_N3PtDMcw"
-CONSUMER_SECRET = "yCwsKqOdJDzcUDD7KBOayLlbe8s"
-TOKEN = "HydDXxGaSIYsPfVlfXy5WF_QsHvN7YgU"
-TOKEN_SECRET = "kKoqt6apoBUFHEZDCSnBuo0Pxuc"
+CONSUMER_KEY = "API Key"
+CONSUMER_SECRET = "API Key"
+TOKEN = "API Key"
+TOKEN_SECRET = "API Key"
 
 
 def request(host, path, url_params=None):
@@ -140,43 +132,31 @@ def query_api(term, location):
     return businesses
 
 def main():
-	cities = []
-	m = 0
-
-	with open("cities.csv", 'r') as infile:
-		reader = csv.DictReader(infile)
-		for row in reader:
-			cities.append(row["city"])
+	cities = ["san fransisco"]
+	newPoint = {}
+	DEFAULT_LOCATION = cities[0]
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM, type=str, help='Search term (default: %(default)s)')
+	parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, \
+	help='Search location (default: %(default)s)')
+	input_values = parser.parse_args()
+	businesses = query_api(input_values.term, input_values.location)
 	
-   	for i in range(0,len(cities)):
-   		DEFAULT_LOCATION = cities[i]
-   		parser = argparse.ArgumentParser()
-   		parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM, type=str, help='Search term (default: %(default)s)')
-   		parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, \
-   		help='Search location (default: %(default)s)')
-   		input_values = parser.parse_args()
-   		try:
-   			businesses = query_api(input_values.term, input_values.location)
-   			try:
-   				len(businesses)
-   				for j in range(0, len(businesses)):
-   					newPoint = businesses[j]
-					for k in range(0,1000):
-						latWalk = random.uniform(-0.01, 0.01)
-						lonWalk = random.uniform(-0.01, 0.01)
-						newPoint["location"]["coordinate"]["latitude"] += latWalk
-						newPoint["location"]["coordinate"]["longitude"] += lonWalk
-						newPoint["id"] = m
-						m+=1
+   	while True:
+   		m = 0
+		for j in range(0, len(businesses)):
+			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
+			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
+			for k in range(0,50000):
+				latWalk = random.uniform(-0.008, 0.008)
+				lonWalk = random.uniform(-0.008, 0.008)
+				newPoint["latitude"] += latWalk
+				newPoint["longitude"] += lonWalk
+				newPoint["id"] = m
+				m+=1
 
-						response = producer.send("my-topic" , "state_code" \
-						, json.dumps(newPoint, indent=4, separators=(',', ': ')))
-			
-			except TypeError:
-				continue
-   		except urllib2.HTTPError as error:
-   			#sys.exit('Encountered HTTP error {0}. Abort program.'.format(error.code))
-   			continue
+				response = producer.send_messages("new-topic", json.dumps(newPoint, indent=4, separators=(',', ': ')))
+						
 
 if __name__ == '__main__':
     main()
