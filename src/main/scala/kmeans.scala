@@ -38,7 +38,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
   def main(args: Array[String]) {
   	  
-    val brokers = "ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9092"
+    val brokers = "localhost:9092"
     val topics = "crowd"
     val topicsSet = topics.split(",").toSet
 	
