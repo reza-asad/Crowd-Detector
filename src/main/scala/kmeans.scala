@@ -36,27 +36,27 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-object kmeans{
-
   def main(args: Array[String]) {
-  
-    val brokers = "host:9092"
-    val topics = "new-topic"
+  	  
+    val brokers = "ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9092"
+    val topics = "crowd"
     val topicsSet = topics.split(",").toSet
 	
-    // Create context with 2 second batch interval
     val sparkConf = new SparkConf().setAppName("kmeans")
   	sparkConf.set("es.index.auto.create", "true")
-  	sparkConf.set("es.nodes", "host:9200") 
-  	sparkConf.set("spark.executor.memory", "4g")
-  	
+  	sparkConf.set("es.nodes", "ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9200") 
+  	sparkConf.set("spark.executor.memory", "5g")
+  	sparkConf.set("spark.cores.max", "8")
+  	sparkConf.set("spark.streaming.receiver.maxRate", "3800")
+    
+    // Create context with 50 seconds batch interval
     val ssc = new StreamingContext(sparkConf, Seconds(50.toLong))
     
     // Create direct kafka stream with brokers and topics
-    val kafkaParams = Map[String, String]("metadata.broker.list" -> brokers)
-    val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet).map(_._2)
-    val points = messages.map(x => parse(x))
-
+	val kafkaParams = Map[String, String]("metadata.broker.list" -> brokers)
+	val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc,kafkaParams, topicsSet).map(_._2)	
+	val points = messages.map(x => parse(x))
+    
     // Create Training and Test Data
     val trainingData = points.map(x => Vectors.sparse(2,Seq((0,compact(render(x \ "latitude")).toDouble),
 	(1,compact(render(x \ "longitude")).toDouble))))	
