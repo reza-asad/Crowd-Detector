@@ -17,11 +17,11 @@ app = Flask(__name__)
 
 @app.route('/Slides')
 def slides():
-    return redirect("http://www.slideshare.net/upload?origin=nav", code=302)
+    return redirect("http://www.slideshare.net/reza-asad/insight-49974017", code=302)
 
 @app.route('/Demo')
 def demo():
-    return redirect("http://www.slideshare.net/upload?origin=nav", code=302)
+    return redirect("https://www.youtube.com/watch?v=AXxKSxV_Gd4&feature=youtu.be", code=302)
 
 @app.route('/Contact')
 def contact():
