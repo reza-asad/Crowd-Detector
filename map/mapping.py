@@ -14,8 +14,7 @@ from math import log
 
 def push(lat, lon, coverage):
 	# Connect to Elasticsearch
-	es = rawes.Elastic('host:9200')
-	#USmap = folium.Map(location=[32.848957, -86.630117], tiles='Mapbox Control Room')
+	es = rawes.Elastic('localhost:9200')
 
 	# This will clreate the map
 	# extratcs points form the database and sketches them 
