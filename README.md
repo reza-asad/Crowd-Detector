@@ -19,7 +19,7 @@ of restaurants in San Fransisco. I performed a random walk to create more points
 
 I use Streaming K-means in the spark streaming environment. There are two indices are created on elasticsearch. 
 One contains data about peoples location and is updated every day due to lack of memory storage. The other index
-contains location of 1000000 people and is updated every 4 minutes.
+contains location of 1000000 people and is updated every 3 minutes.
 
 Engineering challenges : 
 
