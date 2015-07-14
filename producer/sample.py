@@ -144,8 +144,7 @@ def main():
 	input_values = parser.parse_args()
 	businesses = query_api(input_values.term, input_values.location)
    	while True:
-   		m = 187501
-   		t = time.time()
+   		m = 0
 		for j in range(0, len(businesses)):
 			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
 			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
@@ -163,10 +162,7 @@ def main():
 				newPoint["longitude"] += lonWalk
 				newPoint["id"] = m
 				m+=1
-
 				response = producer.send_messages("new-topic", json.dumps(newPoint, indent=4, separators=(',', ': ')))
-						
-		print(time.time()-t)
 		break
 
 if __name__ == '__main__':
