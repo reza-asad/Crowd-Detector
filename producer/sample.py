@@ -29,11 +29,7 @@ DEFAULT_TERM = 'Restaurants'
 SEARCH_LIMIT = 20
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
-<<<<<<< HEAD
-kafka = KafkaClient("ec2-52-8-179-244.us-west-1.compute.amazonaws.com:9092")
-=======
-kafka = KafkaClient("host:9092")
->>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9
+kafka = KafkaClient("localhost:9092")
 producer = SimpleProducer(kafka, async=False)
 
 
@@ -147,8 +143,6 @@ def main():
 	help='Search location (default: %(default)s)')
 	input_values = parser.parse_args()
 	businesses = query_api(input_values.term, input_values.location)
-<<<<<<< HEAD
-
    	while True:
    		m = 187501
    		t = time.time()
@@ -156,15 +150,13 @@ def main():
 			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
 			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
 			for k in range(0,3125):
-=======
-	
+
    	while True:
    		m = 0
 		for j in range(0, len(businesses)):
 			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
 			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
 			for k in range(0,50000):
->>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9
 				latWalk = random.uniform(-0.008, 0.008)
 				lonWalk = random.uniform(-0.008, 0.008)
 				newPoint["latitude"] += latWalk
@@ -174,11 +166,8 @@ def main():
 
 				response = producer.send_messages("new-topic", json.dumps(newPoint, indent=4, separators=(',', ': ')))
 						
-<<<<<<< HEAD
 		print(time.time()-t)
 		break
-=======
->>>>>>> cecffaa5f49bf154dc6c6ff6ae60ca5dc0f0caa9
 
 if __name__ == '__main__':
     main()
