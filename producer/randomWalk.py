@@ -6,7 +6,10 @@
 # people near restaurants. There will be 1000000 points generated and the
 # location of the 1000000 people will get updated.
 #
-# Note: For a better performance the producer should be parallelized.
+# Note: For better performance the producer should be parallelized. 
+# I devided the 1000000 data points between 12 producers. I dedicated
+# 4 of my 5 nodes on AWS for producing the messages. Hence each node
+# hosting 3 producers. 
 # -*- coding: utf-8 -*-
 
 
