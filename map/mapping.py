@@ -29,22 +29,26 @@ def push(lat, lon, coverage):
 
 	# Query Within the Coverage distance Asked
 	query = {
-		"query": {
-			"filtered" : {
-				"query" : {
-					"match_all" : {}
-				},
-				"filter" : {
-				"geo_distance" : {
-					"distance" : "{}km".format(coverage),
-					"location" : {
-						"lat" : lat,
-						"lon" : lon
-					}
-				}
-			}
-			}
-		}
+	  "query": {
+    	"filtered" : {
+    	    "query" : {
+    	        "filtered" : {"filter": {"range": {
+    	           "_timestamp": {
+    	              "gt": "now-3m"
+    	           }
+    	        }}}
+    	    },
+    	    "filter" : {
+    	        "geo_distance" : {
+    	            "distance" : "{}km".format(coverage),
+    	            "location" : {
+    	                "lat" : lat,
+    	                "lon" : lon
+    	            }
+    	        }
+    	    }
+	    }
+	  }
 	}
 
 	mapPoint = es.get("real_time/people/_search?pretty=true&size={}".format(limit), data = query)
