@@ -1,5 +1,6 @@
-Crowd Detector (Built Using Five Nodes on AWS)
+Crowd Detector
 ===========================
+## (Built Using Five Nodes on AWS)
 In this project I have built and app which helps users to avoid wasting time in crowds. Imagine if we had data
 about people's location. It would be nice if we could use that data to detect clusters of population. The app that
 I have built takes user's location of interest in San Fransisco and a search radius seperated by comma. The result
