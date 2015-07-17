@@ -14,7 +14,7 @@ from math import log
 
 def push(lat, lon, coverage):
 	# Connect to Elasticsearch
-	es = rawes.Elastic('localhost:9200')
+	es = rawes.Elastic('awsHost:9200')
 
 	# This will clreate the map
 	# extratcs points form the database and sketches them 
