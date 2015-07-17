@@ -44,7 +44,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 	
     val sparkConf = new SparkConf().setAppName("kmeans")
   	sparkConf.set("es.index.auto.create", "true")
-  	sparkConf.set("es.nodes", "localhost:9200") 
+  	sparkConf.set("es.nodes", "awsHost:9200") 
   	sparkConf.set("spark.executor.memory", "5g")
   	sparkConf.set("spark.cores.max", "8")
   	sparkConf.set("spark.streaming.receiver.maxRate", "3800")
