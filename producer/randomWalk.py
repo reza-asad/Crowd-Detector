@@ -14,7 +14,8 @@
 
 
 from kafka.client import KafkaClient
-from kafka.producer import SimpleProducer
+from kafka.producer import KeyedProducer
+from kafka.partitioner import RoundRobinPartitioner
 import argparse
 import json
 import pprint
@@ -32,7 +33,7 @@ DEFAULT_TERM = 'Restaurants'
 SEARCH_LIMIT = 20
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
-kafka = KafkaClient("localhost:9092")
+kafka = KafkaClient("awsHost:9092")
 producer = SimpleProducer(kafka, async=False)
 
 
@@ -165,7 +166,7 @@ def main():
 				newPoint["longitude"] += lonWalk
 				newPoint["id"] = m
 				m+=1
-				response = producer.send_messages("new-topic", json.dumps(newPoint, indent=4, separators=(',', ': ')))
+				response = producer.send(topic, "{}".format(newPoint["id"]), json.dumps(newPoint, indent=4, separators=(',', ': ')))
 		break
 
 if __name__ == '__main__':
