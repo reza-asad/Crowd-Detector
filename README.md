@@ -21,7 +21,7 @@ I use Streaming K-means in the spark streaming environment. There are two indice
 One contains data about peoples location and is updated every day due to lack of memory storage. The other index
 contains location of 1000000 people and is updated every 3 minutes.
 
-Engineering challenges : 
+Some Engineering challenges : 
 
 1. Tunning kafka, spark streaming and elasticsearch in order to update the map as quick as possible. In particular 
 tunning batch intervals has to be done carefully to avoid situations where the map is empty of points.
