@@ -34,7 +34,7 @@ SEARCH_LIMIT = 20
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
 kafka = KafkaClient("awsHost:9092")
-producer = SimpleProducer(kafka, async=False)
+producer = KeyedProducer(kafka, partitioner=RoundRobinPartitioner)
 
 
 # OAuth credential placeholders that must be filled in by users.
@@ -166,7 +166,7 @@ def main():
 				newPoint["longitude"] += lonWalk
 				newPoint["id"] = m
 				m+=1
-				response = producer.send(topic, "{}".format(newPoint["id"]), json.dumps(newPoint, indent=4, separators=(',', ': ')))
+				response = producer.send_messages(topic, "{}".format(newPoint["id"]), json.dumps(newPoint, indent=4, separators=(',', ': ')))
 		break
 
 if __name__ == '__main__':
