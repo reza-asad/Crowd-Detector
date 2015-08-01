@@ -160,7 +160,6 @@ def main():
 				newPoint["id"] = m
 				m+=1
 				response = producer.send_messages(topic, "{}".format(newPoint["id"]), json.dumps(newPoint, indent=4, separators=(',', ': ')))
-		break
 
 if __name__ == '__main__':
     main()
