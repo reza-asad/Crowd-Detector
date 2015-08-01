@@ -143,8 +143,7 @@ def main():
 	DEFAULT_LOCATION = cities[0]
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM, type=str, help='Search term (default: %(default)s)')
-	parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, \
-	help='Search location (default: %(default)s)')
+	parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, help='Search location (default: %(default)s)')
 	input_values = parser.parse_args()
 	businesses = query_api(input_values.term, input_values.location)
 
