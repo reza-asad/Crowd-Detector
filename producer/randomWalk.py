@@ -147,12 +147,6 @@ def main():
 	help='Search location (default: %(default)s)')
 	input_values = parser.parse_args()
 	businesses = query_api(input_values.term, input_values.location)
-   	while True:
-   		m = 0
-		for j in range(0, len(businesses)):
-			newPoint["latitude"] = businesses[j]["location"]["coordinate"]["latitude"]
-			newPoint["longitude"] = businesses[j]["location"]["coordinate"]["longitude"]
-			for k in range(0,3125):
 
    	while True:
    		m = 0
